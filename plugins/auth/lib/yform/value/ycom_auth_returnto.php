@@ -13,6 +13,7 @@ class rex_yform_value_ycom_auth_returnto extends rex_yform_value_abstract
     {
         $returnTo = $this->getValue();
 
+        $returnTos = [];
         $returnTos[] = (string) $returnTo;
         $returnTos[] = rex_request('returnTo', 'string', '');
         $returnTos[] = $this->getElement(3);
@@ -29,7 +30,7 @@ class rex_yform_value_ycom_auth_returnto extends rex_yform_value_abstract
         $this->params['value_pool']['email'][$this->getName()] = $this->getValue();
     }
 
-    public function executeAction()
+    public function executeAction(): void
     {
         if ('' != $this->getValue()) {
             header('Location: ' . $this->getValue());
@@ -37,7 +38,7 @@ class rex_yform_value_ycom_auth_returnto extends rex_yform_value_abstract
         }
     }
 
-    public function getDescription()
+    public function getDescription(): string
     {
         return 'ycom_auth_returnto|label|[allowed domains: DomainA,DomainB]|[URL]';
     }

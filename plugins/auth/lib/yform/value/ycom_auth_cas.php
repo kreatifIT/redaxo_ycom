@@ -25,6 +25,18 @@ class rex_yform_value_ycom_auth_cas extends rex_yform_value_abstract
             throw new rex_exception('CAS Settings file not found ['.$casConfigPath.']');
         }
 
+        $settings = [];
+        $settings['debug'] = false;
+        $settings['debugPath'] = rex_path::log('ycom_auth_cas.log');
+        $settings['idp'] = [];
+        $settings['idp']['protocol'] = 'https://';
+        $settings['idp']['ServerVersion'] = '2.0';
+        $settings['idp']['host'] = '';
+        $settings['idp']['port'] = 443;
+        $settings['idp']['uri'] = '/cas';
+        $settings['idp']['CasServerValidation'] = false;
+        $settings['idp']['CasServerCACertPath'] = rex_addon::get('ycom')->getDataPath('cas_cert.pem');
+
         include $casConfigPath;
 
         $returnTos = [];
@@ -44,12 +56,15 @@ class rex_yform_value_ycom_auth_cas extends rex_yform_value_abstract
             return '';
         }
 
+        /** @psalm-suppress TypeDoesNotContainType */
         if ($settings['debug']) {
             phpCAS::setVerbose(true);
             phpCAS::setDebug($settings['debugPath']);
         }
 
         phpCAS::client($settings['idp']['ServerVersion'], $settings['idp']['host'], $settings['idp']['port'], $settings['idp']['uri'], false);
+
+        /** @psalm-suppress RedundantCondition */
         if (!$settings['idp']['CasServerValidation']) {
             phpCAS::setNoCasServerValidation();
         } else {
@@ -140,7 +155,7 @@ class rex_yform_value_ycom_auth_cas extends rex_yform_value_abstract
         \rex_response::sendRedirect($returnTo);
     }
 
-    public function getDescription()
+    public function getDescription(): string
     {
         return 'ycom_auth_cas|label|error_msg|[allowed returnTo domains: DomainA,DomainB]|[default Userdata as Json{"ycom_groups": 3, "termsofuse_accepted": 1}]';
     }

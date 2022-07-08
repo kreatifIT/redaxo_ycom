@@ -78,7 +78,7 @@ class rex_yform_value_ycom_auth_saml extends rex_yform_value_abstract
             // init login
             case 'sso':
                 $returnToUrl = rex_yrewrite::getFullUrlByArticleId('', '', ['rex_ycom_auth_mode' => 'saml', 'rex_ycom_auth_func' => 'auth', 'returnTo' => $returnTo], '&');
-                $ssoBuiltUrl = $auth->login($returnToUrl, [], false, false, true);
+                $ssoBuiltUrl = $auth->login($returnToUrl, [], false, false, true) ?? '';
                 rex_ycom_auth::setSessionVar('SAML_AuthNRequestID', $auth->getLastRequestID());
                 rex_ycom_auth::setSessionVar('SAML_ssoDate', date('Y-m-d H:i:s'));
                 rex_response::sendCacheControl();
@@ -125,7 +125,6 @@ class rex_yform_value_ycom_auth_saml extends rex_yform_value_abstract
 
             // init Logout processs with returnTo or redirect from idp
             case 'slo':
-
                 $returnToURL = rex_yrewrite::getFullUrlByArticleId('', '', ['rex_ycom_auth_mode' => 'saml', 'rex_ycom_auth_func' => 'sls', 'returnTo' => $returnTo], '&');
                 $parameters = [];
 
@@ -136,7 +135,7 @@ class rex_yform_value_ycom_auth_saml extends rex_yform_value_abstract
                 rex_ycom_auth::clearUserSession();
                 self::auth_clearUserSession();
 
-                $sloBuiltUrl = $auth->logout($returnToURL, $parameters, $nameId, $sessionIndex, true, $nameIdFormat);
+                $sloBuiltUrl = $auth->logout($returnToURL, $parameters, $nameId, $sessionIndex, true, $nameIdFormat) ?? '';
                 rex_ycom_auth::setSessionVar('SAML_LogoutRequestID', $auth->getLastRequestID());
 
                 session_write_close(); // wirklich nötig ?
@@ -147,7 +146,6 @@ class rex_yform_value_ycom_auth_saml extends rex_yform_value_abstract
 
             // process Logout without returnTo
             case 'sls':
-
                 $requestID = rex_ycom_auth::getSessionVar('SAML_LogoutRequestID', 'string', null);
 
                 try {
@@ -192,7 +190,7 @@ class rex_yform_value_ycom_auth_saml extends rex_yform_value_abstract
         return $this->auth_createOrUpdateYComUser($Userdata, $returnTo);
     }
 
-    public function getDescription()
+    public function getDescription(): string
     {
         return 'ycom_auth_saml|label|error_msg|[allowed returnTo domains: DomainA,DomainB]|default Userdata as Json{"ycom_groups": 3, "termsofuse_accepted": 1}|direct_link 0,1';
     }

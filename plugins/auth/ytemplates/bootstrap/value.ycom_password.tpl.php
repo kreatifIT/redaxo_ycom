@@ -1,7 +1,15 @@
 <?php
 
+/**
+ * @var rex_yform_value_abstract $this
+ * @psalm-scope-this rex_yform_value_abstract
+ */
+
 $type = $type ?? 'text';
 $class = 'text' == $type ? '' : 'form-' . $type . ' ';
+$script = $script ?? false;
+$rules = $rules ?? [];
+
 if (!isset($value)) {
     $value = $this->getValue();
 }
@@ -21,6 +29,7 @@ if (count($notice) > 0) {
 
 $class_group = trim('form-group yform-element ' . $this->getWarningClass());
 
+$class_label = [];
 $class_label[] = 'control-label';
 
 $attributes = [

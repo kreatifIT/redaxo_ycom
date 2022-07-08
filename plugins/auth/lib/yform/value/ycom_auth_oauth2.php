@@ -71,7 +71,9 @@ class rex_yform_value_ycom_auth_oauth2 extends rex_yform_value_abstract
                         return '';
                     }
 
+                    $accessToken = null;
                     try {
+                        /** @var \League\OAuth2\Client\Token\AccessToken $accessToken */
                         $accessToken = $provider->getAccessToken('authorization_code', [
                             'code' => $code,
                         ]);
@@ -120,7 +122,7 @@ class rex_yform_value_ycom_auth_oauth2 extends rex_yform_value_abstract
         return $this->auth_createOrUpdateYComUser($Userdata, $returnTo);
     }
 
-    public function getDescription()
+    public function getDescription(): string
     {
         return 'ycom_auth_oauth2|label|error_msg|[allowed returnTo domains: DomainA,DomainB]|default Userdata as Json{"ycom_groups": 3, "termsofuse_accepted": 1}|direct_link 0,1';
     }

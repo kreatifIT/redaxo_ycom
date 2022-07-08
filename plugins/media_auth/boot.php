@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @var rex_addon $this
+ * @psalm-scope-this rex_addon
+ */
+
 rex_extension::register(['MEDIA_IS_PERMITTED'], static function (rex_extension_point $ep) {
     $ycom_ignore = $ep->getParam('ycom_ignore');
     $subject = $ep->getSubject();
@@ -19,7 +24,7 @@ rex_extension::register(['MEDIA_MANAGER_BEFORE_SEND'], function (rex_extension_p
         return;
     }
     $redirect = rex_ycom_auth::init();
-    if (!rex_ycom_media_auth::checkPerm($ep->getSubject(), $ep)) {
+    if (!rex_ycom_media_auth::checkPerm($ep->getSubject())) {
         $rules = new rex_ycom_media_auth_rules();
         $rules->check($this->getConfig('media_auth_rule'));
     }
@@ -52,6 +57,9 @@ rex_extension::register(['MEDIA_FORM_ADD', 'MEDIA_FORM_EDIT', 'MEDIA_ADDED', 'ME
     }
 
     $group = rex_plugin::get('ycom', 'group')->isAvailable();
+
+    $ycom_group_default = '';
+    $ycom_groups_default = '';
 
     if ($group) {
         $ycom_group_default = rex_request($prefix.'group_type', 'string');
